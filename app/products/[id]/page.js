@@ -63,6 +63,11 @@ function ProductDetailContent() {
                                     className="object-contain p-8 mix-blend-multiply"
                                 />
                             )}
+                            {product.stock === 0 && (
+                                <span className="absolute left-4 top-4 z-10 rounded-full bg-red-600 px-3 py-1 text-sm font-extrabold text-white">
+                                    Out of stock
+                                </span>
+                            )}
                         </div>
 
                         {/* details */}
@@ -84,8 +89,19 @@ function ProductDetailContent() {
                             <div className="mt-4 flex flex-wrap gap-2 text-[13px] font-bold">
                                 <span className="rounded-full border border-line bg-card px-3 py-1">{categoryNames[product.category] || product.category}</span>
                                 <span className="rounded-full border border-line bg-card px-3 py-1">{product.level}</span>
-                                <span className="rounded-full border border-line bg-card px-3 py-1">
-                                    {product.stock > 0 ? `In stock (${product.stock})` : "Out of stock"}
+                                <span
+                                    className={`rounded-full px-3 py-1 ${product.stock === 0
+                                        ? "bg-red-100 text-red-700"
+                                        : product.stock <= 5
+                                            ? "bg-amber-100 text-amber-700"
+                                            : "bg-green-100 text-green-700"
+                                        }`}
+                                >
+                                    {product.stock === 0
+                                        ? "Out of stock"
+                                        : product.stock <= 5
+                                            ? `Only ${product.stock} left!`
+                                            : `${product.stock} in stock`}
                                 </span>
                             </div>
 
@@ -99,7 +115,13 @@ function ProductDetailContent() {
                                 <div className="flex items-center rounded-xl border border-line bg-card">
                                     <button onClick={() => setQty(Math.max(1, qty - 1))} className="h-10 w-10 text-xl font-bold hover:text-brand">−</button>
                                     <span className="w-10 text-center font-bold">{qty}</span>
-                                    <button onClick={() => setQty(Math.min(product.stock, qty + 1))} className="h-10 w-10 text-xl font-bold hover:text-brand">+</button>
+                                    <button
+                                        onClick={() => setQty(Math.min(product.stock, qty + 1))}
+                                        disabled={qty >= product.stock}
+                                        className="h-10 w-10 text-xl font-bold hover:text-brand disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:text-inherit"
+                                    >
+                                        +
+                                    </button>
                                 </div>
                             </div>
                             <p className="mt-4 text-lg font-bold">
@@ -111,7 +133,7 @@ function ProductDetailContent() {
                                 disabled={product.stock === 0}
                                 className="mt-6 w-full rounded-xl bg-brand px-6 py-3.5 text-lg font-extrabold text-white transition hover:-translate-y-0.5 hover:shadow-[0_14px_30px_-12px_var(--color-brand)] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
                             >
-                                {added ? "Added ✓" : "Add to cart"}
+                                {product.stock === 0 ? "Out of stock" : added ? "Added ✓" : "Add to cart"}
                             </button>
                         </div>
                     </div>

@@ -3,20 +3,29 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 const CartContext = createContext(null);
 const STORAGE_KEY = "smashcart-cart";
+const API = process.env.NEXT_PUBLIC_API_URL;
 
-const FREE_DELIVERY_OVER = 10000;
-const DELIVERY_FEE = 300;
+// used until the real settings load, or if they cannot be loaded
+export const DEFAULT_SETTINGS = {
+    deliveryFee: 300,
+    freeDeliveryFrom: 10000,
+    tier1MinItems: 2,
+    tier1Percent: 5,
+    tier2MinItems: 5,
+    tier2Percent: 10,
+};
 
 // discount on the whole order, by the total number of items
-export function getDiscountRate(totalItems) {
-    if (totalItems >= 5) return 0.1; // 5 or more items: 10%
-    if (totalItems >= 2) return 0.05; // 2 to 4 items: 5%
-    return 0; // less than 2 items: no discount
+export function getDiscountRate(totalItems, s = DEFAULT_SETTINGS) {
+    if (totalItems >= s.tier2MinItems) return s.tier2Percent / 100;
+    if (totalItems >= s.tier1MinItems) return s.tier1Percent / 100;
+    return 0;
 }
 
 export function CartProvider({ children }) {
     const [items, setItems] = useState([]);
     const [loaded, setLoaded] = useState(false);
+    const [settings, setSettings] = useState(DEFAULT_SETTINGS);
 
     // 1) when the site opens, load the saved cart from the browser
     useEffect(() => {
@@ -38,6 +47,16 @@ export function CartProvider({ children }) {
             // ignore
         }
     }, [items, loaded]);
+
+    // 3) load the shop settings (delivery fee, discounts) from the API
+    useEffect(() => {
+        fetch(`${API}/api/settings`)
+            .then((res) => (res.ok ? res.json() : Promise.reject()))
+            .then((s) => setSettings({ ...DEFAULT_SETTINGS, ...s }))
+            .catch(() => {
+                // keep the defaults
+            });
+    }, []);
 
     function addToCart(product, qty = 1) {
         const stock = product.stock ?? 99;
@@ -82,14 +101,16 @@ export function CartProvider({ children }) {
     const count = items.reduce((sum, i) => sum + i.qty, 0);
     const total = items.reduce((sum, i) => sum + i.price * i.qty, 0);
 
-    const discountRate = getDiscountRate(count);
+    const discountRate = getDiscountRate(count, settings);
     const discount = Math.round(total * discountRate);
     const afterDiscount = total - discount;
-    const delivery = items.length === 0 || afterDiscount >= FREE_DELIVERY_OVER ? 0 : DELIVERY_FEE;
+    const delivery = items.length === 0 || afterDiscount >= settings.freeDeliveryFrom ? 0 : settings.deliveryFee;
     const grandTotal = afterDiscount + delivery;
 
     return (
-        <CartContext.Provider value={{ items, count, total, discountRate, discount, delivery, grandTotal, loaded, addToCart, changeQty, removeFromCart, clearCart }}>
+        <CartContext.Provider
+            value={{ items, count, total, discountRate, discount, delivery, grandTotal, settings, loaded, addToCart, changeQty, removeFromCart, clearCart }}
+        >
             {children}
         </CartContext.Provider>
     );

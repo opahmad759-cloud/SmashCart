@@ -4,19 +4,14 @@ import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useCart } from "../context/CartContext";
-
-const FREE_DELIVERY_OVER = 10000;
+import DiscountBanner from "../components/DiscountBanner";
 
 export default function CartPage() {
-    const { items, count, total, discountRate, discount, delivery, grandTotal, loaded, changeQty, removeFromCart, clearCart } = useCart();
+    const { items, count, total, discountRate, discount, delivery, grandTotal, settings, loaded, changeQty, removeFromCart, clearCart } = useCart();
 
     const percent = Math.round(discountRate * 100);
     const afterDiscount = total - discount;
 
-    let offerText = "";
-    if (count < 2) offerText = "Add 1 more item to get 5% off";
-    else if (count < 5) offerText = `5% off applied! Add ${5 - count} more item${5 - count === 1 ? "" : "s"} to get 10% off`;
-    else offerText = "10% off applied on your whole order!";
 
     return (
         <>
@@ -39,12 +34,7 @@ export default function CartPage() {
                 {loaded && items.length > 0 && (
                     <>
                         {/* discount message */}
-                        <div
-                            className={`mb-6 rounded-xl px-4 py-3 text-sm font-bold ${discount > 0 ? "bg-green-100 text-green-700" : "bg-brand/10 text-brand"
-                                }`}
-                        >
-                            {offerText}
-                        </div>
+                        <DiscountBanner />
 
                         <div className="grid items-start gap-8 lg:grid-cols-[1fr_340px]">
                             {/* items */}
@@ -106,7 +96,7 @@ export default function CartPage() {
                                 </div>
                                 {delivery > 0 && (
                                     <p className="text-xs text-muted">
-                                        Add Rs {(FREE_DELIVERY_OVER - afterDiscount).toLocaleString()} more for free delivery.
+                                        Add Rs {(settings.freeDeliveryFrom - afterDiscount).toLocaleString()} more for free delivery.
                                     </p>
                                 )}
                                 <div className="mt-3 flex justify-between border-t border-line pt-3 text-xl font-black">

@@ -9,6 +9,8 @@ const nav = [
     { href: "/admin/products", label: "Products", icon: "🏸" },
     { href: "/admin/orders", label: "Orders", icon: "📦" },
     { href: "/admin/customers", label: "Customers", icon: "👥" },
+    { href: "/admin/stock", label: "Stock", icon: "📋" },
+    { href: "/admin/settings", label: "Settings", icon: "⚙️" },
 ];
 
 function AdminShell({ children }) {
