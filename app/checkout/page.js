@@ -7,13 +7,14 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
+import GiftPicker from "../components/GiftPicker";
 
 const API = process.env.NEXT_PUBLIC_API_URL;
 const inputClass = "w-full rounded-xl border border-line bg-card px-4 py-3 outline-none focus:border-brand";
 
 export default function CheckoutPage() {
     const router = useRouter();
-    const { items, count, total, discountRate, discount, delivery, grandTotal, clearCart } = useCart();
+    const { items, count, total, discountRate, discount, delivery, grandTotal, giftEarned, giftChoices, gift, clearCart } = useCart();
     const { user, token, loaded, logout } = useAuth();
 
     const [fullName, setFullName] = useState("");
@@ -35,6 +36,7 @@ export default function CheckoutPage() {
         setLoading(true);
 
         try {
+            if (giftEarned && giftChoices.length > 0 && !gift) throw new Error("Please choose your free gift");
             const res = await fetch(`${API}/api/orders`, {
                 method: "POST",
                 headers: {
@@ -44,6 +46,7 @@ export default function CheckoutPage() {
                 body: JSON.stringify({
                     // only ids and quantities: the server reads the prices itself
                     items: items.map((i) => ({ productId: i._id, qty: i.qty })),
+                    giftProductId: gift ? gift._id : undefined,
                     shipping: { fullName, phone, address, city },
                 }),
             });
@@ -146,7 +149,7 @@ export default function CheckoutPage() {
                             </div>
                         ))}
                     </div>
-
+                    <div className="mt-4"><GiftPicker /></div>
                     <div className="mt-4 border-t border-line pt-3">
                         <div className="flex justify-between py-1 text-muted">
                             <span>Subtotal</span>
@@ -162,6 +165,12 @@ export default function CheckoutPage() {
                             <span>Delivery</span>
                             <span>{delivery === 0 ? "Free" : `Rs ${delivery}`}</span>
                         </div>
+                        {giftEarned && giftChoices.length > 0 && (
+                            <div className="flex justify-between py-1 font-semibold text-green-600">
+                                <span>🎁 Free gift</span>
+                                <span>{gift ? gift.name : "Choose above"}</span>
+                            </div>
+                        )}
                         <div className="mt-2 flex justify-between border-t border-line pt-3 text-xl font-black">
                             <span>Total</span>
                             <span>Rs {grandTotal.toLocaleString()}</span>

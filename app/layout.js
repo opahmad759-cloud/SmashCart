@@ -1,6 +1,8 @@
 import "./globals.css";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
+import { Suspense } from "react";
+import ChatWidget from "./components/ChatWidget";
 
 export const metadata = {
   title: "SmashCart | Badminton gear",
@@ -14,6 +16,9 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <CartProvider>{children}</CartProvider>
         </AuthProvider>
+        <Suspense fallback={null}>
+          <ChatWidget />
+        </Suspense>
       </body>
     </html>
   );

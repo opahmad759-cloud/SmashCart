@@ -151,6 +151,12 @@ function OrderDetail() {
                         <span>Delivery</span>
                         <span>{order.delivery === 0 ? "Free" : `Rs ${order.delivery}`}</span>
                     </div>
+                    {order.giftItem?.name && (
+                        <div className="flex justify-between py-1 font-semibold text-green-600">
+                            <span>🎁 Free gift</span>
+                            <span>{order.giftItem.name}</span>
+                        </div>
+                    )}
                     <div className="mt-2 flex justify-between border-t border-line pt-3 text-xl font-black">
                         <span>Final amount</span>
                         <span>Rs {order.total.toLocaleString()}</span>

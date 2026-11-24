@@ -129,7 +129,15 @@ function OrderDetail() {
                             </div>
                         )}
                         <div className="flex justify-between"><span className="text-muted">Delivery</span><span>{order.delivery === 0 ? "Free" : `Rs ${order.delivery.toLocaleString()}`}</span></div>
-                        <div className="flex justify-between text-lg font-black"><span>Final amount</span><span>Rs {order.total.toLocaleString()}</span></div>
+
+                        {order.giftItem?.name && (
+                            <div className="flex justify-between font-bold text-green-700">
+                                <span>🎁 Free gift (pack it!)</span>
+                                <span>{order.giftItem.name}</span>
+                            </div>
+                        )}
+                        <div className="flex justify-between text-lg font-black"><span>Final amount</span><span>Rs {order.total.toLocaleString()}</span>
+                        </div>
                     </div>
                 </section>
 

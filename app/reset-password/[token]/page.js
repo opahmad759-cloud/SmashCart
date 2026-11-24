@@ -12,6 +12,7 @@ function ResetForm() {
     const { token } = useParams(); // the long text from the link
 
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const [confirm, setConfirm] = useState("");
     const [error, setError] = useState("");
     const [done, setDone] = useState(false);

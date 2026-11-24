@@ -1,4 +1,5 @@
 "use client";
+import { useAuth } from "./AuthContext";
 import { createContext, useContext, useEffect, useState } from "react";
 
 const CartContext = createContext(null);
@@ -22,10 +23,22 @@ export function getDiscountRate(totalItems, s = DEFAULT_SETTINGS) {
     return 0;
 }
 
+// bigger discount for the customer's very first order
+export function getFirstOrderRate(totalItems) {
+    if (totalItems < 1) return 0;
+    if (totalItems >= 4) return 0.6;
+    if (totalItems === 3) return 0.4;
+    return 0.3;
+}
+
 export function CartProvider({ children }) {
     const [items, setItems] = useState([]);
     const [loaded, setLoaded] = useState(false);
     const [settings, setSettings] = useState(DEFAULT_SETTINGS);
+    const [settingsLoaded, setSettingsLoaded] = useState(false);
+    const { token } = useAuth();
+    const [giftId, setGiftId] = useState(null);
+    const [offer, setOffer] = useState({ isFirstOrder: false, giftFrom: 20000, giftChoices: [] });
 
     // 1) when the site opens, load the saved cart from the browser
     useEffect(() => {
@@ -55,8 +68,23 @@ export function CartProvider({ children }) {
             .then((s) => setSettings({ ...DEFAULT_SETTINGS, ...s }))
             .catch(() => {
                 // keep the defaults
-            });
+            })
+            .finally(() => setSettingsLoaded(true));
     }, []);
+
+    // 4) ask the server if the next order is this customer's first order
+    useEffect(() => {
+        if (!token) {
+            setOffer((o) => ({ ...o, isFirstOrder: false }));
+            return;
+        }
+        fetch(`${API}/api/orders/offer`, { headers: { Authorization: `Bearer ${token}` } })
+            .then((res) => (res.ok ? res.json() : Promise.reject()))
+            .then((data) => setOffer(data))
+            .catch(() => {
+                // keep the normal discount
+            });
+    }, [token, items.length]);
 
     function addToCart(product, qty = 1) {
         const stock = product.stock ?? 99;
@@ -101,15 +129,18 @@ export function CartProvider({ children }) {
     const count = items.reduce((sum, i) => sum + i.qty, 0);
     const total = items.reduce((sum, i) => sum + i.price * i.qty, 0);
 
-    const discountRate = getDiscountRate(count, settings);
+    const discountRate = offer.isFirstOrder ? getFirstOrderRate(count) : getDiscountRate(count, settings);
     const discount = Math.round(total * discountRate);
     const afterDiscount = total - discount;
     const delivery = items.length === 0 || afterDiscount >= settings.freeDeliveryFrom ? 0 : settings.deliveryFee;
     const grandTotal = afterDiscount + delivery;
+    const giftEarned = !!token && !offer.isFirstOrder && afterDiscount >= offer.giftFrom;
+    const giftChoices = offer.giftChoices || [];
+    const gift = giftEarned ? giftChoices.find((g) => g._id === giftId) || null : null;
 
     return (
         <CartContext.Provider
-            value={{ items, count, total, discountRate, discount, delivery, grandTotal, settings, loaded, addToCart, changeQty, removeFromCart, clearCart }}
+            value={{ items, count, total, discountRate, discount, delivery, grandTotal, giftEarned, giftChoices, gift, setGiftId, offer, isLoggedIn: !!token, settings, settingsLoaded, loaded, addToCart, changeQty, removeFromCart, clearCart }}
         >
             {children}
         </CartContext.Provider>

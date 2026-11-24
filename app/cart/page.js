@@ -5,9 +5,10 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useCart } from "../context/CartContext";
 import DiscountBanner from "../components/DiscountBanner";
+import GiftPicker from "../components/GiftPicker";
 
 export default function CartPage() {
-    const { items, count, total, discountRate, discount, delivery, grandTotal, settings, loaded, changeQty, removeFromCart, clearCart } = useCart();
+    const { items, count, total, discountRate, discount, delivery, grandTotal, giftEarned, giftChoices, gift, settings, loaded, changeQty, removeFromCart, clearCart } = useCart();
 
     const percent = Math.round(discountRate * 100);
     const afterDiscount = total - discount;
@@ -35,6 +36,7 @@ export default function CartPage() {
                     <>
                         {/* discount message */}
                         <DiscountBanner />
+                        <GiftPicker />
 
                         <div className="grid items-start gap-8 lg:grid-cols-[1fr_340px]">
                             {/* items */}
@@ -98,6 +100,13 @@ export default function CartPage() {
                                     <p className="text-xs text-muted">
                                         Add Rs {(settings.freeDeliveryFrom - afterDiscount).toLocaleString()} more for free delivery.
                                     </p>
+                                )}
+
+                                {giftEarned && giftChoices.length > 0 && (
+                                    <div className="flex justify-between py-1.5 font-semibold text-green-600">
+                                        <span>🎁 Free gift</span>
+                                        <span>{gift ? gift.name : "Choose above"}</span>
+                                    </div>
                                 )}
                                 <div className="mt-3 flex justify-between border-t border-line pt-3 text-xl font-black">
                                     <span>Final amount</span>
