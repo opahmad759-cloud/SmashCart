@@ -3,6 +3,7 @@ import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "../../../../context/AuthContext";
+import ImageUpload from "../../../../components/ImageUpload";
 
 const API = process.env.NEXT_PUBLIC_API_URL;
 const inputClass = "w-full rounded-xl border border-line bg-card px-4 py-3 outline-none focus:border-brand";
@@ -45,6 +46,7 @@ function EditProduct() {
     async function handleSubmit(e) {
         e.preventDefault();
         setError("");
+
         setLoading(true);
         try {
             const res = await fetch(`${API}/api/admin/products/${id}`, {
@@ -122,8 +124,8 @@ function EditProduct() {
                 </div>
 
                 <div>
-                    <label className="mb-1.5 block text-sm font-bold">Image path</label>
-                    <input required value={form.image} onChange={set("image")} placeholder="/images/products/racket-4.jpg" className={inputClass} />
+                    <label className="mb-1.5 block text-sm font-bold">Photo</label>
+                    <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} />
                 </div>
 
                 <div>

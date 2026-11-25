@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../../context/AuthContext";
+import ImageUpload from "../../../components/ImageUpload";
 
 const API = process.env.NEXT_PUBLIC_API_URL;
 const inputClass = "w-full rounded-xl border border-line bg-card px-4 py-3 outline-none focus:border-brand";
@@ -23,6 +24,10 @@ export default function NewProduct() {
     async function handleSubmit(e) {
         e.preventDefault();
         setError("");
+        if (!form.image) {
+            setError("Please choose a photo");
+            return;
+        }
         setLoading(true);
         try {
             const res = await fetch(`${API}/api/admin/products`, {
@@ -87,9 +92,8 @@ export default function NewProduct() {
                 </div>
 
                 <div>
-                    <label className="mb-1.5 block text-sm font-bold">Image path</label>
-                    <input required value={form.image} onChange={set("image")} placeholder="/images/products/racket-4.jpg" className={inputClass} />
-                    <p className="mt-1 text-xs text-muted">The photo must already be inside public/images/products.</p>
+                    <label className="mb-1.5 block text-sm font-bold">Photo</label>
+                    <ImageUpload value={form.image} onChange={(url) => setForm({ ...form, image: url })} />
                 </div>
 
                 <div>
