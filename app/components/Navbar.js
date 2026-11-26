@@ -97,7 +97,7 @@ export default function Navbar() {
             <header className="sticky top-0 z-30 border-b border-line bg-card/95 backdrop-blur-md shadow-xs transition-colors">
                 <div className="mx-auto flex h-18 max-w-295 items-center justify-between gap-6 px-5">
                     {/* Brand & Mobile Toggle */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 sm:gap-3">
                         {/* mobile menu toggle */}
                         <button
                             onClick={() => setOpen(true)}
@@ -112,7 +112,7 @@ export default function Navbar() {
                         </button>
 
                         <Link href="/" className="group flex items-center gap-2.5 text-2xl font-black tracking-tight">
-                            <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-brand text-white shadow-md shadow-brand/20 transition-transform duration-300 group-hover:scale-105">
+                            <div className="relative flex h-9 w-9 max-[380px]:hidden items-center justify-center rounded-xl bg-brand text-white shadow-md shadow-brand/20 transition-transform duration-300 group-hover:scale-105">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="h-5 w-5">
                                     <circle cx="12" cy="8" r="5" />
                                     <path d="M12 13v8" />
@@ -120,7 +120,7 @@ export default function Navbar() {
                                     <path d="M9 21h6" />
                                 </svg>
                             </div>
-                            <span className="text-xl font-black tracking-[-0.03em] uppercase">
+                            <span className="text-base sm:text-xl font-black tracking-[-0.03em] uppercase">
                                 Smash<span className="text-brand">Cart</span>
                             </span>
                             <span className="hidden sm:inline-block rounded-sm bg-ink px-1.5 py-0.5 text-[9px] font-black uppercase tracking-widest text-white">PRO</span>
@@ -142,7 +142,7 @@ export default function Navbar() {
                     </nav>
 
                     {/* Actions cluster */}
-                    <div className="flex items-center gap-2.5">
+                    <div className="flex items-center gap-1.5 sm:gap-2.5">
                         {loaded && user && user.role === "admin" && (
                             <Link href="/admin" className="rounded-xl bg-ink px-3.5 py-2 text-xs font-black uppercase tracking-wider text-white transition hover:bg-brand">
                                 Admin
@@ -150,7 +150,7 @@ export default function Navbar() {
                         )}
 
                         {loaded && !user && (
-                            <Link href="/login" className="rounded-xl border border-line bg-card px-4 py-2 text-[13px] font-extrabold text-ink transition hover:border-brand hover:text-brand">
+                            <Link href="/login" className="whitespace-nowrap rounded-xl border border-line bg-card px-3 sm:px-4 py-2 text-[13px] font-extrabold text-ink transition hover:border-brand hover:text-brand">
                                 Sign In
                             </Link>
                         )}
@@ -213,7 +213,7 @@ export default function Navbar() {
                             </div>
                         )}
 
-                        <Link href="/cart" className="relative flex items-center gap-2 rounded-xl border border-line bg-card px-4 py-2 text-[13px] font-extrabold transition-all duration-200 hover:border-brand hover:-translate-y-0.5 active:scale-95 shadow-xs">
+                        <Link href="/cart" className="relative flex items-center gap-2 rounded-xl border border-line bg-card px-3 sm:px-4 py-2 text-[13px] font-extrabold transition-all duration-200 hover:border-brand hover:-translate-y-0.5 active:scale-95 shadow-xs">
                             <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
                                 <line x1="3" y1="6" x2="21" y2="6" />
