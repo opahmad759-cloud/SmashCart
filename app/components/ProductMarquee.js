@@ -13,18 +13,28 @@ export default function ProductMarquee() {
     const row = [...base, ...base];
 
     return (
-        <section id="products" className="py-17">
-            <div className="mx-auto flex max-w-295 flex-wrap items-end justify-between gap-5 px-5">
+        <section id="products" className="py-18 bg-bg2/40 border-b border-line">
+            <div className="mx-auto flex max-w-295 flex-wrap items-end justify-between gap-6 px-5">
                 <div>
-                    <p className="text-[13px] font-extrabold uppercase tracking-[0.14em] text-brand">Best sellers</p>
-                    <h2 className="my-1.5 text-[clamp(28px,4vw,42px)] font-black tracking-tight">Trending now</h2>
+                    <span className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-brand">
+                        <span className="h-1.5 w-1.5 rounded-full bg-brand animate-pulse"></span>
+                        MATCH-READY GEAR
+                    </span>
+                    <h2 className="mt-1 text-[clamp(28px,4vw,42px)] font-black uppercase tracking-tight text-ink">
+                        OFFICIAL TOURNAMENT EQUIPMENT
+                    </h2>
+                    <p className="mt-1 text-sm font-medium text-muted">
+                        Certified racquets, shuttles, and court footwear chosen by international athletes.
+                    </p>
                 </div>
                 <div className="flex flex-wrap gap-2">
                     {tabs.map((t) => (
                         <button
                             key={t.key}
                             onClick={() => setActive(t.key)}
-                            className={`rounded-full border px-4.5 py-2 text-sm font-bold transition ${active === t.key ? "border-brand bg-brand text-white" : "border-line bg-card text-muted hover:border-brand hover:text-ink"
+                            className={`rounded-xl border px-4 py-2 text-xs font-black uppercase tracking-wider transition-all duration-200 active:scale-95 ${active === t.key
+                                ? "border-brand bg-brand text-white shadow-md shadow-brand/20"
+                                : "border-line bg-card text-muted hover:border-brand/60 hover:text-ink hover:-translate-y-0.5"
                                 }`}
                         >
                             {t.label}
@@ -33,8 +43,8 @@ export default function ProductMarquee() {
                 </div>
             </div>
 
-            <div className="marquee-pause mt-5.5 overflow-hidden py-3.5 [mask-image:linear-gradient(90deg,transparent,#000_5%,#000_95%,transparent)]">
-                <div className="marquee-track" style={{ "--dur": `${base.length * 5}s` }}>
+            <div className="marquee-pause mt-7 overflow-hidden py-4 [mask-image:linear-gradient(90deg,transparent,#000_4%,#000_96%,transparent)]">
+                <div className="marquee-track" style={{ "--dur": `${base.length * 4.5}s` }}>
                     {row.map((p, i) => (
                         <ProductCard key={`${p.id}-${i}`} product={p} />
                     ))}

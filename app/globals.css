@@ -1,23 +1,25 @@
 @import "tailwindcss";
 
-/* ONE PLACE TO CHANGE THE WHOLE LOOK: edit these colors */
+/* ONE PLACE TO CHANGE THE WHOLE LOOK: Pro Tournament Theme (Yonex / Astrox Crimson) */
 @theme {
-  --color-bg: #FAFAF7;
-  /* page background */
-  --color-bg2: #F1F1EC;
-  /* soft strips and image backgrounds */
+  --color-bg: #F7F8FA;
+  /* arena ice page background */
+  --color-bg2: #ECEEF2;
+  /* soft technical grey strips and image backgrounds */
   --color-card: #FFFFFF;
-  /* cards */
-  --color-ink: #111418;
-  /* main text */
-  --color-muted: #5F6670;
-  /* grey text */
-  --color-brand: #FF4B2B;
-  /* main accent (buttons, highlights) */
-  --color-line: #E3E3DC;
-  /* borders */
+  /* bright studio white cards */
+  --color-ink: #0E1218;
+  /* midnight carbon main text */
+  --color-muted: #586274;
+  /* steel grey muted text */
+  --color-brand: #E52538;
+  /* championship crimson red accent */
+  --color-line: #DDE1E8;
+  /* clean hairline borders */
   --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 }
+
+
 
 html {
   scroll-behavior: smooth;
@@ -64,4 +66,116 @@ html {
 button:not(:disabled),
 [role="button"] {
   cursor: pointer;
+}
+
+/* Micro-interaction & animation keyframes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes floatSlow {
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(-18deg);
+  }
+
+  50% {
+    transform: translateY(-8px) rotate(-16deg);
+  }
+}
+
+@keyframes pulseSubtle {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.85;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes drawCheck {
+  0% {
+    stroke-dashoffset: 48;
+    transform: scale(0.8);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-fade-in-up-delay-1 {
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
+}
+
+.animate-fade-in-up-delay-2 {
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.24s both;
+}
+
+.animate-pop-in {
+  animation: popIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-float-slow {
+  animation: floatSlow 5s ease-in-out infinite;
+}
+
+.animate-pulse-subtle {
+  animation: pulseSubtle 2.5s ease-in-out infinite;
+}
+
+.animate-check {
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: drawCheck 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .animate-fade-in-up,
+  .animate-fade-in-up-delay-1,
+  .animate-fade-in-up-delay-2,
+  .animate-pop-in,
+  .animate-float-slow,
+  .animate-pulse-subtle,
+  .animate-check {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }

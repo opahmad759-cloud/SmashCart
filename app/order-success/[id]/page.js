@@ -45,10 +45,14 @@ function OrderContent() {
 
     return (
         <div className="mx-auto max-w-2xl">
-            <div className="text-center">
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-3xl text-green-600">✓</div>
-                <h1 className="mt-4 text-[clamp(28px,4vw,38px)] font-black tracking-tight">Thank you, {order.shipping.fullName}!</h1>
-                <p className="mt-1 text-muted">
+            <div className="text-center animate-fade-in-up">
+                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-emerald-50 border-2 border-emerald-500 shadow-lg shadow-emerald-500/20 animate-pop-in">
+                    <svg className="h-10 w-10 text-emerald-600 animate-check" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
+                <h1 className="mt-5 text-[clamp(28px,4vw,38px)] font-black tracking-tight">Thank you, {order.shipping.fullName}!</h1>
+                <p className="mt-1.5 text-muted">
                     Your order <b className="text-ink">#{order._id.slice(-6).toUpperCase()}</b> has been placed. We will call{" "}
                     <b className="text-ink">{order.shipping.phone}</b> to confirm it.
                 </p>

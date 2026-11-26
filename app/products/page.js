@@ -18,7 +18,7 @@ const priceOptions = [
     { label: "Under Rs 50,000", value: "50000" },
 ];
 
-const selectClass = "rounded-xl border border-line bg-card px-3.5 py-2.5 text-sm font-semibold outline-none focus:border-brand";
+const selectClass = "rounded-xl border border-line bg-card px-4 py-2.5 text-xs font-bold outline-none transition focus:border-brand shadow-xs";
 
 function ProductsContent() {
     const searchParams = useSearchParams();
@@ -75,16 +75,26 @@ function ProductsContent() {
 
     return (
         <main className="mx-auto max-w-295 px-5 py-12">
-            <p className="text-[13px] font-extrabold uppercase tracking-[0.14em] text-brand">Shop</p>
-            <h1 className="my-1.5 text-[clamp(30px,4vw,44px)] font-black tracking-tight">All products</h1>
+            <span className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-brand">
+                <span className="h-1.5 w-1.5 rounded-full bg-brand"></span>
+                OFFICIAL CATALOGUE
+            </span>
+            <h1 className="mt-1 text-[clamp(32px,4vw,46px)] font-black uppercase tracking-tight text-ink">
+                TOURNAMENT GEAR & EQUIPMENT
+            </h1>
+            <p className="mt-1 text-base text-muted max-w-160">
+                Filter through championship-spec racquets, BWF match shuttlecocks, and court footwear.
+            </p>
 
             {/* category buttons */}
-            <div className="mt-5 flex flex-wrap gap-2">
+            <div className="mt-6 flex flex-wrap gap-2">
                 {tabs.map((t) => (
                     <button
                         key={t.key}
                         onClick={() => setCategory(t.key)}
-                        className={`rounded-full border px-4.5 py-2 text-sm font-bold transition ${category === t.key ? "border-brand bg-brand text-white" : "border-line bg-card text-muted hover:border-brand hover:text-ink"
+                        className={`rounded-xl border px-4.5 py-2 text-xs font-black uppercase tracking-wider transition-all duration-200 active:scale-95 ${category === t.key
+                            ? "border-brand bg-brand text-white shadow-md shadow-brand/20"
+                            : "border-line bg-card text-muted hover:border-brand/60 hover:text-ink hover:-translate-y-0.5"
                             }`}
                     >
                         {t.label}
@@ -114,19 +124,19 @@ function ProductsContent() {
                     ))}
                 </select>
 
-                <button onClick={clearFilters} className="text-sm font-bold text-brand hover:underline">
+                <button onClick={clearFilters} className="text-xs font-black uppercase tracking-wider text-brand hover:underline">
                     Clear filters
                 </button>
             </div>
 
-            <p className="mb-6 mt-6 text-sm text-muted">
-                {loading ? "Loading..." : `${products.length} product${products.length === 1 ? "" : "s"} found`}
+            <p className="mb-6 mt-6 text-xs font-bold uppercase tracking-wider text-muted">
+                {loading ? "Loading match equipment..." : `${products.length} product${products.length === 1 ? "" : "s"} found`}
             </p>
 
             {error && <p className="font-semibold text-brand">{error}</p>}
 
             {!loading && !error && products.length === 0 && (
-                <p className="rounded-xl border border-line bg-card p-6 text-muted">No products match these filters.</p>
+                <p className="rounded-xl border border-line bg-card p-6 text-muted">No products match these tournament filters.</p>
             )}
 
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

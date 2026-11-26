@@ -18,11 +18,27 @@ const sideLink = "flex items-center gap-3 rounded-xl px-4 py-3 font-semibold tex
 
 export default function Navbar() {
     const [open, setOpen] = useState(false);
+    const [userMenuOpen, setUserMenuOpen] = useState(false);
     const [pending, setPending] = useState(0);
     const { count, settings, settingsLoaded } = useCart();
     const { user, token, logout, loaded } = useAuth();
 
-    const close = () => setOpen(false);
+    const close = () => {
+        setOpen(false);
+        setUserMenuOpen(false);
+    };
+
+    // Close user dropdown when clicking outside
+    useEffect(() => {
+        if (!userMenuOpen) return;
+        const onClickOutside = (e) => {
+            if (!e.target.closest("#user-account-menu")) {
+                setUserMenuOpen(false);
+            }
+        };
+        document.addEventListener("click", onClickOutside);
+        return () => document.removeEventListener("click", onClickOutside);
+    }, [userMenuOpen]);
 
     // how many orders are still pending (only for logged-in users)
     useEffect(() => {
@@ -73,53 +89,140 @@ export default function Navbar() {
     return (
         <>
             {settingsLoaded && (
-                <div className="bg-brand px-3 py-2 text-center text-sm font-bold text-white">
+                <div className="bg-brand px-3 py-2 text-center text-xs font-black uppercase tracking-wider text-white shadow-xs">
+                    <span className="inline-block animate-pulse-subtle mr-2">⚡</span>
                     {offerText}
                 </div>
             )}
-            <header className="sticky top-0 z-30 border-b border-line bg-bg/90 backdrop-blur-md">
-                <div className="mx-auto flex h-17 max-w-295 items-center justify-between gap-4 px-5">
+            <header className="sticky top-0 z-30 border-b border-line bg-card/95 backdrop-blur-md shadow-xs transition-colors">
+                <div className="mx-auto flex h-18 max-w-295 items-center justify-between gap-6 px-5">
+                    {/* Brand & Mobile Toggle */}
                     <div className="flex items-center gap-3">
-                        {/* sidebar button */}
+                        {/* mobile menu toggle */}
                         <button
                             onClick={() => setOpen(true)}
                             aria-label="Open menu"
-                            className="flex h-10.5 w-10.5 items-center justify-center rounded-xl border border-line bg-card hover:border-brand"
+                            className="flex h-10.5 w-10.5 items-center justify-center rounded-xl border border-line bg-bg transition-colors hover:border-brand lg:hidden"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
                                 <line x1="3" y1="6" x2="21" y2="6" />
                                 <line x1="3" y1="12" x2="21" y2="12" />
                                 <line x1="3" y1="18" x2="21" y2="18" />
                             </svg>
                         </button>
 
-                        <Link href="/" className="flex items-center gap-2 text-2xl font-black tracking-tight">
-                            <svg viewBox="0 0 32 32" className="h-7.5 w-7.5">
-                                <circle cx="16" cy="16" r="15" className="fill-brand" />
-                                <path d="M9 22 L16 8 L23 22 Z" fill="#fff" />
-                                <circle cx="16" cy="23" r="3" fill="#fff" />
-                            </svg>
-                            <span>Smash<span className="text-brand">Cart</span></span>
+                        <Link href="/" className="group flex items-center gap-2.5 text-2xl font-black tracking-tight">
+                            <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-brand text-white shadow-md shadow-brand/20 transition-transform duration-300 group-hover:scale-105">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="h-5 w-5">
+                                    <circle cx="12" cy="8" r="5" />
+                                    <path d="M12 13v8" />
+                                    <path d="M9 17h6" />
+                                    <path d="M9 21h6" />
+                                </svg>
+                            </div>
+                            <span className="text-xl font-black tracking-[-0.03em] uppercase">
+                                Smash<span className="text-brand">Cart</span>
+                            </span>
+                            <span className="hidden sm:inline-block rounded-sm bg-ink px-1.5 py-0.5 text-[9px] font-black uppercase tracking-widest text-white">PRO</span>
                         </Link>
                     </div>
 
+                    {/* Desktop Navigation Links */}
+                    <nav className="hidden lg:flex items-center gap-1">
+                        {links.map((link) => (
+                            <Link
+                                key={link.label}
+                                href={link.href}
+                                className="group relative px-3.5 py-2 text-[13px] font-extrabold uppercase tracking-wider text-muted transition-colors hover:text-ink"
+                            >
+                                <span>{link.label}</span>
+                                <span className="absolute bottom-0 left-3.5 right-3.5 h-0.5 scale-x-0 bg-brand transition-transform duration-200 group-hover:scale-x-100" />
+                            </Link>
+                        ))}
+                    </nav>
+
+                    {/* Actions cluster */}
                     <div className="flex items-center gap-2.5">
-                        {/* wait until we know if someone is logged in, so it does not flicker */}
                         {loaded && user && user.role === "admin" && (
-                            <Link href="/admin" className="rounded-xl bg-black px-4 py-2 text-sm font-bold text-white">
+                            <Link href="/admin" className="rounded-xl bg-ink px-3.5 py-2 text-xs font-black uppercase tracking-wider text-white transition hover:bg-brand">
                                 Admin
                             </Link>
                         )}
 
                         {loaded && !user && (
-                            <Link href="/login" className="rounded-xl border border-line bg-card px-3.5 py-2 text-sm font-semibold hover:border-brand">
-                                Login
+                            <Link href="/login" className="rounded-xl border border-line bg-card px-4 py-2 text-[13px] font-extrabold text-ink transition hover:border-brand hover:text-brand">
+                                Sign In
                             </Link>
                         )}
 
-                        <Link href="/cart" className="relative rounded-xl border border-line bg-card px-3.5 py-2 text-sm font-semibold hover:border-brand">
-                            Cart
-                            <span className="absolute -right-2 -top-2 rounded-full bg-brand px-1.75 text-[11px] font-bold text-white">{count}</span>
+                        {loaded && user && (
+                            <div id="user-account-menu" className="relative">
+                                <button
+                                    onClick={() => setUserMenuOpen((prev) => !prev)}
+                                    aria-expanded={userMenuOpen}
+                                    aria-label="User account menu"
+                                    className="flex items-center gap-2 rounded-xl border border-line bg-card px-3 py-1.5 text-xs font-bold transition hover:border-brand active:scale-95"
+                                >
+                                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-brand text-[11px] font-black text-white">
+                                        {firstName.charAt(0).toUpperCase()}
+                                    </span>
+                                    <span className="hidden sm:inline font-black text-ink">{firstName}</span>
+                                    <svg viewBox="0 0 20 20" fill="currentColor" className={`h-4 w-4 text-muted transition-transform duration-200 ${userMenuOpen ? "rotate-180" : ""}`}>
+                                        <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
+                                    </svg>
+                                </button>
+
+                                {userMenuOpen && (
+                                    <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-line bg-card p-2 shadow-2xl z-50 animate-pop-in">
+                                        <div className="px-3 py-2 border-b border-line">
+                                            <p className="text-xs font-black text-ink truncate">{user.name}</p>
+                                            <p className="text-[11px] text-muted truncate">{user.email}</p>
+                                        </div>
+                                        <div className="py-1">
+                                            <Link
+                                                href="/profile"
+                                                onClick={() => setUserMenuOpen(false)}
+                                                className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold text-ink transition hover:bg-bg2"
+                                            >
+                                                <span>👤</span>
+                                                <span>Profile Settings</span>
+                                            </Link>
+                                            <Link
+                                                href="/orders"
+                                                onClick={() => setUserMenuOpen(false)}
+                                                className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold text-ink transition hover:bg-bg2"
+                                            >
+                                                <span>📦</span>
+                                                <span>My Orders</span>
+                                            </Link>
+                                        </div>
+                                        <div className="pt-1 border-t border-line">
+                                            <button
+                                                onClick={() => {
+                                                    logout();
+                                                    setUserMenuOpen(false);
+                                                }}
+                                                className="w-full flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-black text-red-600 transition hover:bg-red-50 text-left cursor-pointer"
+                                            >
+                                                <span>🚪</span>
+                                                <span>Sign Out</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        <Link href="/cart" className="relative flex items-center gap-2 rounded-xl border border-line bg-card px-4 py-2 text-[13px] font-extrabold transition-all duration-200 hover:border-brand hover:-translate-y-0.5 active:scale-95 shadow-xs">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                                <line x1="3" y1="6" x2="21" y2="6" />
+                                <path d="M16 10a4 4 0 0 1-8 0" />
+                            </svg>
+                            <span className="hidden sm:inline">Bag</span>
+                            <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-brand px-1 text-[11px] font-black text-white shadow-xs">
+                                {count}
+                            </span>
                         </Link>
                     </div>
                 </div>

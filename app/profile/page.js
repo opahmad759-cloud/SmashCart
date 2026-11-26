@@ -177,6 +177,20 @@ export default function ProfilePage() {
                         </button>
                     </div>
                 </form>
+
+                {/* sign out option */}
+                <div className="rounded-2xl border border-line bg-card p-6 flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                        <h2 className="text-base font-black text-ink">Account Session</h2>
+                        <p className="text-xs text-muted">Sign out of your SmashCart account on this browser.</p>
+                    </div>
+                    <button
+                        onClick={logout}
+                        className="rounded-xl border border-red-200 bg-red-50 px-5 py-2.5 text-xs font-black uppercase tracking-wider text-red-600 transition hover:bg-red-600 hover:text-white active:scale-95 shadow-xs cursor-pointer"
+                    >
+                        Sign Out
+                    </button>
+                </div>
             </div>
         );
     }
@@ -185,7 +199,17 @@ export default function ProfilePage() {
         <>
             <Navbar />
             <main className="mx-auto max-w-2xl px-5 py-10">
-                <h1 className="mb-6 text-[clamp(28px,4vw,40px)] font-black tracking-tight">My profile</h1>
+                <div className="mb-6 flex items-center justify-between">
+                    <h1 className="text-[clamp(28px,4vw,40px)] font-black tracking-tight text-ink">My profile</h1>
+                    {user && (
+                        <button
+                            onClick={logout}
+                            className="rounded-xl border border-line bg-card px-4 py-2 text-xs font-black uppercase tracking-wider text-red-600 transition hover:border-red-300 hover:bg-red-50 active:scale-95 shadow-xs cursor-pointer"
+                        >
+                            Sign Out 🚪
+                        </button>
+                    )}
+                </div>
                 {content}
             </main>
             <Footer />
